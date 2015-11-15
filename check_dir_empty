@@ -1,18 +1,24 @@
-#!/bin/sh
+#!/usr/bin/python
+from __future__ import division, print_function
+import argparse
+import os
+import sys
 
-dir=$1
 
-if [ "$dir" = "" ]; then
-  echo "Usage: $0 <dir>" >&2
-  exit 1
-fi
+parser = argparse.ArgumentParser(
+    description='Check that the directories given are empty')
+parser.add_argument(
+    'directories', metavar='dir', nargs='+', type=str,
+    help='directory to be checked')
+args = parser.parse_args()
 
-count=`find "$dir" -mindepth 1 -maxdepth 1 | wc -l`
 
-if [ "$count" = "0" ]; then
-  echo "OK: '$dir' is empty."
-  exit 0
-else
-  echo "WARNING: '$dir' is NOT empty ($count entries)."
-  exit 1
-fi
+for directory in args.directories:
+    listdir = os.listdir(directory)
+    if len(listdir) != 0:
+        print('WARNING: Directory {} is not empty ({} entries)'
+              .format(directory, len(listdir)))
+        sys.exit(1)
+
+print('OK: All given directories are empty')
+sys.exit(0)
