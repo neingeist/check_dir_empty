@@ -1,0 +1,18 @@
+#!/bin/sh
+
+dir=$1
+
+if [ "$dir" = "" ]; then
+  echo "Usage: $0 <dir>" >&2
+  exit 1
+fi
+
+count=`find "$dir" -mindepth 1 -maxdepth 1 | wc -l`
+
+if [ "$count" = "0" ]; then
+  echo "OK: '$dir' is empty."
+  exit 0
+else
+  echo "WARNING: '$dir' is NOT empty ($count entries)."
+  exit 1
+fi
