@@ -10,11 +10,19 @@ parser = argparse.ArgumentParser(
 parser.add_argument(
     'directories', metavar='dir', nargs='+', type=str,
     help='directory to be checked')
+parser.add_argument(
+    '--no-count-empty', dest='count_empty', action='store_false',
+    help='do not count empty files (useful to check /var/mail)')
 args = parser.parse_args()
 
 
 for directory in args.directories:
     listdir = os.listdir(directory)
+
+    if not args.count_empty:
+        listdir = [fn for fn in listdir
+                   if os.path.getsize(os.path.join(directory, fn)) > 0]
+
     if len(listdir) != 0:
         print('WARNING: Directory {} is not empty ({} entries)'
               .format(directory, len(listdir)))
